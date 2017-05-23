@@ -72,8 +72,8 @@ public class Clock {
     fun void run() {
         while(true) {
             tick.broadcast();
-            1 +=> tick_count;
             tick_dur() => now;
+            1 +=> tick_count;
         }
     }
 }
