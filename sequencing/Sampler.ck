@@ -9,7 +9,7 @@ public class Sampler
     Shred @ shred;
 
     buf => fader;
-    0.5 => fader.gain;
+    1.0 => fader.gain;
     0.0 => buf.gain;
     
     fun static Sampler @ sequence(Clock @ clock, string path, float pattern[]){
