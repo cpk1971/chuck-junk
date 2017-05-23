@@ -11,7 +11,7 @@ public class Sampler
     Gain fader;
     Shred @ shred;
 
-    buf => fader => dac;
+    buf => fader;
     0.5 => fader.gain;
     0.0 => buf.gain;
     

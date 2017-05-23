@@ -33,6 +33,7 @@ Sampler.sequence(c, "media/snare.aif", amen_snare) @=> s[2];
 Sampler.sequence(c, "media/crash.aif", amen_crash) @=> s[3];
 
 for (0 => int i; i < s.cap(); i++) {
+    s[i].fader => dac;
     s[i].start();
 }
 c.start();
