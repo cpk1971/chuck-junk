@@ -1,8 +1,5 @@
-// sequencer.ck
-// sequencer class for sequencing arbitrary samples 
-// author: spencer salazar (updated by jason webb)
-// Feel free to use/modify/distribute as you see fit.  
-
+// we might at some point in the future implement this as a UGen
+// so you could just chuck it to a patch.
 public class Sampler
 {
     Clock @ clock;
