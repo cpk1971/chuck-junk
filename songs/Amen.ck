@@ -1,6 +1,3 @@
-// to run from parent directory try
-// chuck Clock Sampler demo/Amen
-
 // patterns
 
 // ride cymbal -- we'll mute them a bit by multiplying them by 0.3

@@ -17,7 +17,7 @@ Or, alternatively, do the following after installing [Homebrew](https://brew.sh)
 
 So far, just:
 
-* A rudimentary sampler/tempo combination which acts as a cheezy sequencer.  Run it from the root directory with `chuck Clock Sampler demo/Amen`
+* A rudimentary sampler/tempo combination which acts as a cheezy sequencer.  Run it from the root directory with `chuck AmenDemo`
 
 # Any gotchas?
 
