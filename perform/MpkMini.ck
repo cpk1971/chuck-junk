@@ -43,7 +43,7 @@ public class MpkMini {
         }
     }
 
-    fun void handle_voice() {
+    fun void handle_voice(int voice) {
         Event off;
         int note;
 
@@ -53,18 +53,18 @@ public class MpkMini {
         while( true ) {
             on => now;
             on.note => note;
-            delegate.noteOn(note, on.velocity);
+            delegate.noteOn(voice, note, on.velocity);
             off @=> us[note];
 
             off => now;
-            delegate.noteOff(note);
             null @=> us[note];
+            delegate.noteOff(voice, note);
         }
     }
 
     fun void run() {
         for ( 0 => int i; i < voices; i++ ) {
-            spork ~ handle_voice();
+            spork ~ handle_voice(i);
         }
 
         while (true) {
@@ -84,6 +84,8 @@ public class MpkMini {
                     msg.data3 => on.velocity;
                     on.signal();
                     me.yield();
+                } else {
+                    if (us[msg.data2] != null) us[msg.data2].signal();
                 }
             }
         }
