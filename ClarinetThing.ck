@@ -22,9 +22,10 @@ class Delegate extends MidiDelegate {
     }
 
     fun void control(int channel, int value) {
-        <<< "Control", channel, value >>>;
         if (channel == 1) {
-            value / 127 $ float => r.mix;
+            value / 127.0 => float mix;
+            <<< "reverb wet/dry =>", mix >>>;
+            mix => r.mix;
         }
     }
 }
