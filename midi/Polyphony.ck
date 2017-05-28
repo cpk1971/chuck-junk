@@ -64,7 +64,6 @@ public class Polyphony {
             on_note.copyTo(on);
             if (on.on && on.velocity > 0) {
                 on.signal();
-                me.yield();
             } else {
                 if(us[on.value] != null) {
                     us[on.value].signal();

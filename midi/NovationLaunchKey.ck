@@ -2,10 +2,10 @@ public class NovationLaunchKey {
     MidiDaemon @ basic;
     MidiDaemon @ in_control;
     Potentiometer pots[8];
-    Potentiometer master;
-    Potentiometer modulation;
-    int pitch;
-    int pitch_target;
+    Potentiometer _master;
+    Potentiometer _modulation;
+    int _pitch;
+    int _pitch_target;
     dur interpolation_period;
 
     Shred @ shreds[4];
@@ -24,19 +24,35 @@ public class NovationLaunchKey {
         return with(MidiDaemon.with(basic), MidiDaemon.with(in_control));
     }
 
+    fun Potentiometer @ pot(int which) {
+        return pots[which - 1];
+    }
+
+    fun Potentiometer @ master() {
+        return _master;
+    }
+
+    fun NoteEvent @ note_key() {
+        return on_note_key;
+    }
+
+    fun float pitch() {
+        return ((_pitch - 64) $ float) / (_pitch < 64 ? 64 : 63);
+    }
+
     // private methods
     fun void setup() {
         100::samp => interpolation_period;
-        64 => pitch_target => pitch;
-        reset_pads;
+        64 => _pitch_target => _pitch;
+        reset_pads();
         for (0 => int i; i < pots.cap(); i++) {
             i => pots[i].id;
             "pot " + Std.itoa(i) => pots[i].name;
         }
-        pots.cap() => master.id;
-        "master" => master.name;
-        pots.cap() + 1 => modulation.id;
-        "modulation" => modulation.name;
+        pots.cap() => _master.id;
+        "master" => _master.name;
+        pots.cap() + 1 => _modulation.id;
+        "modulation" => _modulation.name;
     }
 
     fun void reset_pads() {
@@ -68,8 +84,7 @@ public class NovationLaunchKey {
             if (basic.note().channel == 1) {
                 basic.note().copyTo(on_note_key);
                 on_note_key.broadcast();
-                me.yield();
-                return;
+                continue;
             }
 
             // TODO -- pads
@@ -83,9 +98,9 @@ public class NovationLaunchKey {
             basic.control().copyTo(e); 
             if (e.channel == 1) {
                 if (e.message == 1) {
-                    e.value => modulation.value;            
+                    e.value => _modulation.value;            
                 } else if (e.message == 7) {
-                    e.value => master.value;
+                    e.value => _master.value;
                 } else if (e.message >= 21 && e.message <= 28) {
                     e.value => pots[e.message - 21].value;
                 }
@@ -98,7 +113,7 @@ public class NovationLaunchKey {
         // use msb only because lsb is wonky
         while (true) {
             basic.pitch_bend() => now;
-            basic.pitch_bend().msb => pitch_target;
+            basic.pitch_bend().msb => _pitch_target;
             me.yield();
        }
     }
@@ -107,8 +122,8 @@ public class NovationLaunchKey {
         // interpolate pitch
         // TODO maybe refactor?
         while (true) {
-            if (pitch != pitch_target) {
-                (pitch < pitch_target) ? 1 : -1 +=> pitch;
+            if (_pitch != _pitch_target) {
+                (_pitch < _pitch_target) ? 1 : -1 +=> _pitch;
             }
             interpolation_period => now;
         }

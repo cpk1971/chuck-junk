@@ -8,6 +8,10 @@ public class Potentiometer {
     }
 
     fun float minusPlus() {
-        return ((value - 64) $ float) / 63;
+        return ((value - 64) $ float) / (value < 64 ? 64 : 63);
+    }
+
+    fun void debug() {
+        <<< "Potentiometer: ", id, name, value, zeroOne(), minusPlus() >>>;
     }
 }
