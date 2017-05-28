@@ -115,5 +115,13 @@ public class MidiDaemon {
         velocity => msg.data3;
         mout.send(msg);
     }
+
+    fun void send_cc(int channel, int message, int value) {
+        MidiMsg msg;
+        0xB0 | ((channel-1) & 0x0F) => msg.data1;
+        message => msg.data2;
+        value => msg.data3;
+        mout.send(msg);
+    }
 }
 

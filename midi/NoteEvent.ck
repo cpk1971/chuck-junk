@@ -9,11 +9,14 @@ public class NoteEvent extends Event {
     }
 
     fun NoteEvent @ copy() {
-        new NoteEvent @=> NoteEvent @ e;
+        return copyTo(new NoteEvent);
+    }
+
+    fun NoteEvent @ copyTo(NoteEvent @ e) {
         on => e.on;
         channel => e.channel;
         value => e.value;
         velocity => e.velocity;
         return e;
-    }
+   }
 }

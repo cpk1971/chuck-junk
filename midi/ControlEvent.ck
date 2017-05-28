@@ -8,7 +8,10 @@ public class ControlEvent extends Event {
     }
 
     fun ControlEvent @ copy() {
-        new ControlEvent @=> ControlEvent e;
+        return copyTo(new ControlEvent);
+    }
+
+    fun ControlEvent @ copyTo(ControlEvent @ e) {
         channel => e.channel;
         message => e.message;
         value => e.value;
