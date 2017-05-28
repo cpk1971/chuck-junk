@@ -9,6 +9,9 @@ public class MidiDaemon {
     ControlEvent on_control;
     PitchBendEvent on_pitch_bend;
     Shred @ main_shred;
+    dur wait_time;
+
+    5::ms => wait_time;
 
     fun static MidiDaemon @ with(int device) {
         new MidiDaemon @=> MidiDaemon @m;
@@ -81,7 +84,7 @@ public class MidiDaemon {
                 } else {
                     <<<"Unimplemented", msg.data1, msg.data2, msg.data3>>>;
                 }
-                10::ms => now;
+                wait_time => now;
             }
         }
     }
