@@ -81,7 +81,7 @@ public class MidiDaemon {
                 } else {
                     <<<"Unimplemented", msg.data1, msg.data2, msg.data3>>>;
                 }
-                me.yield();
+                10::ms => now;
             }
         }
     }
@@ -91,21 +91,21 @@ public class MidiDaemon {
         msg_channel() => on_note.channel;
         msg.data2 => on_note.value; 
         msg.data3 => on_note.velocity;
-        on_note.broadcast();
+        on_note.signal();
     }
 
     fun void broadcast_control() {
         msg_channel() => on_control.channel;
         msg.data2 => on_control.message;
         msg.data3 => on_control.value;
-        on_control.broadcast();
+        on_control.signal();
     }
 
     fun void broadcast_pitch_bend() {
         msg_channel() => on_pitch_bend.channel;
         msg.data2 => on_pitch_bend.lsb;
         msg.data3 => on_pitch_bend.msb;
-        on_pitch_bend.broadcast();
+        on_pitch_bend.signal();
     }
 
     fun void send_note(int onoff, int channel, int value, int velocity) {

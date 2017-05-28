@@ -9,11 +9,12 @@ public class Polyphony {
     Event @ us[128];
     Shred @ main_shred;
 
-    fun static Polyphony @ with(int channel, NoteEvent @ on_note, VoiceDelegate @ delegate) {
+    fun static Polyphony @ with(int channel, NoteEvent @ on_note, VoiceDelegate @ delegate, int voices) {
         new Polyphony @=> Polyphony @ p;
         channel => p.channel;
         on_note @=> p.on_note;
         delegate @=> p.delegate;
+        voices @=> p.voices;
         p.start();
         return p;
     }
@@ -34,6 +35,7 @@ public class Polyphony {
     fun void handle_voice(int voice) {
         Event off;
         int note;
+        <<< "Voice active: ", voice >>>;
 
         // when the "on" event triggers, it is no longer listening on the "on" event
         // so the next "on" event will grab the next shred

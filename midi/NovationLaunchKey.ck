@@ -36,6 +36,11 @@ public class NovationLaunchKey {
         return on_note_key;
     }
 
+    // this is so we can abstractify this driver
+    fun int note_key_channel() {
+        return 1;
+    }
+
     fun float pitch() {
         return ((_pitch - 64) $ float) / (_pitch < 64 ? 64 : 63);
     }
@@ -83,7 +88,8 @@ public class NovationLaunchKey {
             // an actual note!
             if (basic.note().channel == 1) {
                 basic.note().copyTo(on_note_key);
-                on_note_key.broadcast();
+                on_note_key.signal();
+                me.yield();
                 continue;
             }
 
