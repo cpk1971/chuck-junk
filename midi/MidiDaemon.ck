@@ -7,6 +7,7 @@ public class MidiDaemon {
     MidiMsg msg;
     NoteEvent on_note;
     ControlEvent on_control;
+    PitchBendEvent on_pitch_bend;
     Shred @ main_shred;
 
     fun static MidiDaemon @ with(int device) {
@@ -38,41 +39,81 @@ public class MidiDaemon {
         }
     }
 
+    fun NoteEvent @ note() {
+        return on_note;
+    }
+
+    fun ControlEvent @ control() {
+        return on_control;
+    }
+
+    fun PitchBendEvent @ pitch_bend() {
+        return on_pitch_bend;
+    }
+
+    // private methods
+
+    fun int msg_type() {
+        return msg.data1 & 0xF0;
+    }
+
+    fun int msg_channel() {
+        return (msg.data1 & 0x0F) + 1;
+    }
+
     fun void run() {
+        0x80 => int NOTE_OFF;
+        0x90 => int NOTE_ON;
+        0xB0 => int CONTROL_CHANGE;
+        0xE0 => int PITCH_BEND;
         while (true) {
             min => now;
             while ( min.recv(msg) ) {
-                if (msg.data1 >= 128 && msg.data1 <= 142 ) {
-                    // note off
-                    send_note(0, msg.data1 - 127);
-                }
-                else if (msg.data1 >= 144 && msg.data1 <= 159 ) {
-                    // note on
-                    send_note(1, msg.data1 - 143);
-                } else if (msg.data1 >= 176 && msg.data1 <= 191 ) {
-                    send_control();
+                msg_type() => int type;
+                if (type == NOTE_OFF) {
+                    broadcast_note(0);
+                } else if (type == NOTE_ON) {
+                    broadcast_note(1);
+                } else if (type == CONTROL_CHANGE) {
+                    broadcast_control();
+                } else if (type == PITCH_BEND) {
+                    broadcast_pitch_bend();
                 } else {
                     <<<"Unimplemented", msg.data1, msg.data2, msg.data3>>>;
                 }
+                me.yield();
             }
         }
     }
 
-    fun void send_note(int onoff, int channel) {
+    fun void broadcast_note(int onoff) {
         onoff => on_note.on;
-        channel => on_note.channel;
+        msg_channel() => on_note.channel;
         msg.data2 => on_note.value; 
         msg.data3 => on_note.velocity;
         on_note.broadcast();
-        me.yield();
     }
 
-    fun void send_control() {
-        msg.data1 - 175 => on_control.channel;
+    fun void broadcast_control() {
+        msg_channel() => on_control.channel;
         msg.data2 => on_control.message;
         msg.data3 => on_control.value;
         on_control.broadcast();
-        me.yield();
+    }
+
+    fun void broadcast_pitch_bend() {
+        msg_channel() => on_pitch_bend.channel;
+        msg.data2 => on_pitch_bend.lsb;
+        msg.data3 => on_pitch_bend.msb;
+        on_pitch_bend.broadcast();
+    }
+
+    fun void send_note(int onoff, int channel, int value, int velocity) {
+        MidiMsg msg;
+        (onoff ? 0x90 : 0x80) | ((channel-1) & 0x0F) => msg.data1;
+        value => msg.data2;
+        velocity => msg.data3;
+        mout.send(msg);
     }
 }
 

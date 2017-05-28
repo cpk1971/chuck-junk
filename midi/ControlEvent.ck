@@ -6,4 +6,12 @@ public class ControlEvent extends Event {
     fun void debug() {
         <<< "ControlEvent: ", channel, message, value >>>;
     }
+
+    fun ControlEvent @ copy() {
+        new ControlEvent @=> ControlEvent e;
+        channel => e.channel;
+        message => e.message;
+        value => e.value;
+        return e;
+    }
 }
