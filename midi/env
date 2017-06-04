@@ -1,0 +1,12 @@
+MIDI_LIB_HAS=(
+    "midi/NoteEvent.ck" 
+    "midi/LatchEvent.ck"
+    "midi/ControlEvent.ck" 
+    "midi/PitchBendEvent.ck" 
+    "midi/MidiDaemon.ck" 
+    "midi/Potentiometer.ck" 
+    "midi/VoiceDelegate.ck"
+    "midi/Polyphony.ck"
+)
+
+export MIDI_LIB=${MIDI_LIB_HAS[@]}
