@@ -41,6 +41,20 @@ public class Note {
         return this;
     }
 
+    fun int octave() {
+        return (_value + 24) / 12 - 2;
+    }
+
+    fun int octave(int octave) {
+        Math.abs(_value % 12) => int offset;
+        (octave + 2) * 12 => _value;
+        if (value < 0 || value > 127) {
+            1 => _error;
+            "value out of range" => _status;
+        }
+        return octave;
+    }
+
     fun int length() {
         return _length;
     }
@@ -94,6 +108,23 @@ public class Note {
             + length_notation() + "," + _dotted + "," + _triplet + "," 
             + _error + "," + _status;
     }
+
+    fun Note @ copy() {
+        new Note @=> Note @ n;
+        _value => n._value;
+        _length => n._length;
+        _dotted => n._triplet;
+        _error => n._error;
+        _status => n._status;
+        return n;
+    }
+
+    fun Note @ transpose(int delta) {
+        n._value +=> delta;
+        return this;
+    }
+
+
 
     // private
     fun static Note @ _parse_note(string s) {
